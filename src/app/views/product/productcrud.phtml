@@ -1,0 +1,18 @@
+<!-- display all product in tabular form with edit, delete buttons in action section -->
+<?php include_once(APP_PATH.'/views/header.php'); ?>
+<h1>List of All Products</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Image</th>
+            <th scope="col">Title</th>
+            <th scope="col">Description</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php echo $message ?>
+    </tbody>
+</table>
