@@ -11,7 +11,7 @@ class OrderController extends Controller
         foreach ($order as $value) {
             $product = $this->db->fetchAll(
                 "SELECT * FROM `products` where `prod_id` = '$value[pid]'",
-                    \Phalcon\Db\Enum::FETCH_ASSOC
+                \Phalcon\Db\Enum::FETCH_ASSOC
             );
 
             $grandTotal = $product[0]['price'] * $value['quantity'];
@@ -40,23 +40,58 @@ class OrderController extends Controller
                 <span>Total</span><span>$$grandTotal</span>
                 </div>
                 </div>
-                </div>
-
-                <form method=\"POST\" action='?pid=$id'>
-    Set Status
-    <select name=\"setstatus\" onchange=\"this.form.submit()\">
-        <option value=\"placed\">Placed</option>
-        <option value=\"in-process\">In-process</option>
-        <option value=\"in-transit\">In-transit</option>
-        <option value=\"delivered\">Delivered</option>
-    </select>
-</form>";
-        }
-        if (isset($_POST["setstatus"])) {
-            echo $_GET['pid'];
-            $sql = "UPDATE `orders` SET `order_status`=\"$_POST[setstatus]\" WHERE `pid` = $value[pid]";
-            $this->db->execute($sql);
+                </div>";
+            $res .= $this->tag->linkTo(
+                ['order/edit?oid=' . $value['oid'], 'Edit Order', 'class' => 'btn btn-success m-3']
+            );
+            $res .= $this->tag->linkTo(
+                ['order/delete?oid=' . $value['oid'], 'Delete Order', 'class' => 'btn btn-danger']
+            );
         }
         echo $this->view->message = $res;
+    }
+
+
+    public function deleteAction()
+    {
+        $this->db->execute("DELETE FROM `orders` WHERE `oid` = $_GET[oid]");
+        $this->response->redirect('/order/');
+    }
+    public function editAction()
+    {
+        $oid = $_GET['oid'];
+        $orders = $this->db->fetchAll(
+            "SELECT * FROM `orders` where `oid` = '$oid'",
+            \Phalcon\Db\Enum::FETCH_ASSOC
+        );
+        $order = $orders[0];
+
+        $res = "";
+        $res = "<form method = 'POST' action = '/order/update?oid=$oid'>";
+        $res .= "<label for=\"fname\">Order Id:</label>
+        <input type=\"text\" disabled  name=\"prod_id\" value = $order[oid]><br><br>";
+        $res .= "<label for=\"fname\">Product Id:</label>
+        <input type=\"text\" disabled  name=\"prod_id\" value = $order[pid]><br><br>";
+        $res .= "<label for=\"fname\">User Id:</label>
+        <input type=\"text\" disabled  name=\"user_id\" value = $order[uid]><br><br>";
+        $res .= "<label for=\"status\">Set Status:</label>
+
+        <select name=\"status\" id=\"status\">
+          <option value=\"placed\">Placed</option>
+          <option value=\"in-process\">In-Process</option>
+          <option value=\"in-transit\">In-Transit</option>
+          <option value=\"delivered\">Delivered</option>
+        </select>";
+        $res .= "<input class = 'btn btn-primary m-3' type = 'submit' value = 'Update Order'></input>";
+        $res .= "</form>";
+        $this->view->message = $res;
+    }
+
+    public function updateAction() {
+        $oid = $_GET['oid'];
+        $sql = "UPDATE `orders` SET `order_status` = \"$_POST[status]\"
+        WHERE `oid` = $oid";
+        $this->db->execute($sql);
+        $this->response->redirect('/order/');
     }
 }

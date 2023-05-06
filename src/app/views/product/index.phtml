@@ -1,11 +1,10 @@
-
-<h3 class="mt-4 mb-2 d-flex "><strong>Products</strong></h3>
-<?php include_once(APP_PATH.'/views/header.php'); ?>
+<h3 class="mt-4 mb-2 d-flex "><strong>
+    <?php echo $this->locale->_("Products") ?>
+  </strong></h3>
+<?php include_once(APP_PATH . '/views/header.php'); ?>
 <section style="background-color: #eee;">
-  <div class="text-center container py-5 flex-row">
-      <div class="col-lg-4 col-md-12 mb-4">
-        <?php echo $message ?>
-      </div>
-    </div>
+  <div class="text-center container row">
+    <?php echo $message ?>
+  </div>
   </div>
 </section>

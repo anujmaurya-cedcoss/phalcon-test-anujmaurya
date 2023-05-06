@@ -22,6 +22,7 @@ class Listener extends injectable
         $acl->addRole('manager');
         $acl->addRole('user');
         $acl->addRole('accountant');
+        $acl->addRole('guest');
         /*
          * Add the Components
          */
@@ -37,37 +38,37 @@ class Listener extends injectable
         $acl->allow('admin', '*', '*');
         $acl->allow('manager', 'product', '*');
         $acl->allow('accountant', 'order', '*');
-        $acl->allow('user', 'index', 'index');
-        $acl->allow('user', 'product', 'index');
-        $acl->allow('user', 'product', 'myorders');
-        $acl->allow('user', 'product', 'buy');
+        $acl->allow('*', 'index', 'index');
+        $acl->allow('user', 'product', ['index', 'myorders', 'buy']);
+        $acl->allow('guest', 'product', ['index']);
         $acl->allow('*', 'signup', '*');
         $controller = $dis->getControllerName();
         $action = $dis->getActionName();
-        if($controller == '') {
+        if ($controller == '') {
             $controller = 'index';
         }
-        if($action == '') {
+        if ($action == '') {
             $action = 'index';
         }
         $tokenReceived = $_SESSION['currToken'];
-        if ($tokenReceived != '') {
+        if ($tokenReceived != '' && isset($_SESSION['currToken'])) {
             $parser = new Parser();
             $tokenObject = $parser->parse($tokenReceived);
             $role = $tokenObject->getClaims()->getPayload()['sub'];
-            echo $role. ' '. $controller. ' '. $action;
-            // echo "allowed"; die;
-            if (true === $acl->isAllowed($role, $controller, $action)) {
-                if (file_exists(APP_PATH . "/controllers/$controller/")) {
-                    $_SESSION['currUser'] = $tokenReceived;
-                    $this->response->redirect($controller / $action);
-                } else {
-                    echo ('Access Granted') . ':)';
-                }
+        }
+        if ($role == '') {
+            $role = 'guest';
+        }
+        if (true === $acl->isAllowed($role, $controller, $action)) {
+            if (file_exists(APP_PATH . "/controllers/$controller/")) {
+                $_SESSION['currUser'] = $tokenReceived;
+                $this->response->redirect($controller / $action);
             } else {
-                echo ('Access denied') . ':(';
-                die;
+                echo ('Access Granted') . ':)';
             }
+        } else {
+            echo ('Access denied') . ':(';
+            die;
         }
     }
 }

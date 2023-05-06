@@ -10,6 +10,13 @@ use Phalcon\Session\Manager;
 use Phalcon\Session\Adapter\Stream;
 use handler\Listener\Listener;
 use component\Locale\Locale;
+use Phalcon\Logger\LoggerFactory;
+use Phalcon\Logger\AdapterFactory;
+use Phalcon\Storage\SerializerFactory;
+use Phalcon\Cache\Adapter\Stream as CStream;
+
+$adapterFactory = new AdapterFactory();
+$loggerFactory = new LoggerFactory($adapterFactory);
 
 $config = new Config([]);
 
@@ -17,25 +24,25 @@ $config = new Config([]);
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH . '/app');
 
-include_once(BASE_PATH.'/vendor/autoload.php');
+include_once(BASE_PATH . '/vendor/autoload.php');
 // Register an autoloader
 $loader = new Loader();
 
 $loader->registerDirs(
     [
-        APP_PATH. "/assets/",
+        APP_PATH . "/assets/",
         APP_PATH . "/models/",
         APP_PATH . "/controllers/",
-        APP_PATH ."/components/"
+        APP_PATH . "/components/"
     ]
 );
 $loader->registerNamespaces([
     "handler\Listener" => APP_PATH . "/handlers/",
     "handler\Aware" => APP_PATH . "/handlers/",
-    "component\Locale" => APP_PATH."/components/",
-    "Store\User" => APP_PATH. "/models/",
-    "Store\Order" => APP_PATH. "/models/",
-    "Store\Product" => APP_PATH. "/models/",
+    "component\Locale" => APP_PATH . "/components/",
+    "Store\User" => APP_PATH . "/models/",
+    "Store\Order" => APP_PATH . "/models/",
+    "Store\Product" => APP_PATH . "/models/",
 ]);
 
 $loader->register();
@@ -61,7 +68,19 @@ $container->set(
         return $url;
     }
 );
-
+// implementing the cache
+$container->set(
+    'cache',
+    function () {
+        $serializerFactory = new SerializerFactory();
+        $options = [
+            'defaultSerializer' => 'Json',
+            'lifetime' => 7200,
+            'storageDir' => APP_PATH.'/data/storage',
+        ];
+        return new CStream($serializerFactory, $options);
+    }
+);
 
 $application = new Application($container);
 

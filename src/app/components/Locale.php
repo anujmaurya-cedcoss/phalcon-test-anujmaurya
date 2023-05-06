@@ -6,7 +6,6 @@ use Phalcon\Translate\Adapter\NativeArray;
 use Phalcon\Translate\InterpolatorFactory;
 use Phalcon\Translate\TranslateFactory;
 
-session_start();
 class Locale extends Injectable
 {
     /**
@@ -14,16 +13,11 @@ class Locale extends Injectable
      */
     public function getTranslator(): NativeArray
     {
-        $language = $_SESSION['language'];
-        $messages = [];
-        if(isset($_SESSION['language'])) {
-            $translationFile = APP_PATH.'/messages/' . $language . '.php';
-        }
-        if (true !== file_exists($translationFile)) {
-            $translationFile = APP_PATH.'/messages/en-GB.php';
-        }
-        require $translationFile;
 
+        $messages = [];
+        $translationFile = APP_PATH.'/messages/nl_NL.php';
+        require_once $translationFile;
+        
         $interpolator = new InterpolatorFactory();
         $factory      = new TranslateFactory($interpolator);
         

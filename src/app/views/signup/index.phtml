@@ -1,4 +1,3 @@
-
 <section class="vh-100 bg-image"
     style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
     <div class="mask d-flex align-items-center h-100 gradient-custom-3">
@@ -19,39 +18,60 @@
                             <div class="form-outline mb-4">
                                 <input name='email' type="email" id="form3Example3cg"
                                     class="form-control form-control-lg" />
-                                <label class="form-label" for="form3Example3cg">Your Email</label>
+                                <label class="form-label" for="form3Example3cg">
+                                    <?php echo $this->locale->_("Your Email") ?>
+                                </label>
                             </div>
 
                             <div class="form-outline mb-4">
                                 <input name='password' type="password" id="form3Example4cg"
                                     class="form-control form-control-lg" />
-                                <label class="form-label" for="form3Example4cg">Password</label>
+                                <label class="form-label" for="form3Example4cg">
+                                    <?php echo $this->locale->_("Password") ?>
+                                </label>
                             </div>
 
                             <div class="form-outline mb-4">
                                 <input name='repassword' type="password" id="form3Example4cdg"
                                     class="form-control form-control-lg" />
-                                <label class="form-label" for="form3Example4cdg">Repeat your password</label>
+                                <label class="form-label" for="form3Example4cdg">
+                                    <?php echo $this->locale->_("Repeat your password") ?>
+                                </label>
                             </div>
 
                             <div>
-                                <label for="role">Choose a role:</label>
+                                <label for="role">
+                                    <?php echo $this->locale->_("Choose a role") ?>:
+                                </label>
 
                                 <select name="role" id="role">
-                                    <option value="user">User</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="manager">Manager</option>
-                                    <option value="accountant">Accountant</option>
+                                    <option value="user">
+                                        <?php echo $this->locale->_("User") ?>
+                                    </option>
+                                    <option value="admin">
+                                        <?php echo $this->locale->_("Admin") ?>
+                                    </option>
+                                    <option value="manager">
+                                        <?php echo $this->locale->_("Manager") ?>
+                                    </option>
+                                    <option value="accountant">
+                                        <?php echo $this->locale->_("Accountant") ?>
+                                    </option>
                                 </select>
                             </div>
                             <div class="d-flex justify-content-center">
                                 <button type="submit"
-                                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Register</button>
+                                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">
+                                    <?php echo $this->locale->_("Register") ?>
+                                </button>
                             </div>
                             </form>
-                            <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="#!"
-                                    class="fw-bold text-body"><u>Login here</u></a></p>
-
+                            <div>
+                                <? echo $this->tag->linkTo(
+                                    ['signup/login', $this->locale->_('LogIn Instead'), 'class' => $class]
+                                );
+                                ?>
+                            </div>
                         </div>
                     </div>
                 </div>

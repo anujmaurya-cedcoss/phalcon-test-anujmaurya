@@ -7,31 +7,25 @@ class ProductController extends Controller
     {
         $product = $this->db->fetchAll(
             "SELECT * FROM products",
-                \Phalcon\Db\Enum::FETCH_ASSOC
+            \Phalcon\Db\Enum::FETCH_ASSOC
         );
         $res = "";
         foreach ($product as $value) {
-            $res .= "<div class=\"card\">
+            $res .= "<div class=\"col-4 row my-3\"><div class=\"card\">
             <div class=\"bg-image hover-zoom ripple ripple-surface ripple-surface-light\"
               data-mdb-ripple-color=\"light\">
               <img src=\"$value[image]\"
-                class=\"w-100\" alt ='image' />
-              <a href=\"#!\">
-                <div class=\"mask\">
-                  <div class=\"d-flex justify-content-start align-items-end h-100\">
-                    <h5><span class=\"badge bg-primary ms-2\">New</span></h5>
-                  </div>
-                </div>
+                class=\"\" alt ='image' width = 200px height = 200px />
                 <div class=\"hover-overlay\">
                   <div class=\"mask\" style=\"background-color: rgba(251, 251, 251, 0.15);\"></div>
                 </div>
               </a>
             </div>
             <div class=\"card-body\">
-              <a href=\"\" class=\"text-reset\">
+              <a class=\"text-reset\">
                 <h5 class=\"card-title mb-3\">$value[title]</h5>
               </a>
-              <a href=\"\" class=\"text-reset\">
+              <a class=\"text-reset\">
                 <p>$value[category]</p>
               </a>
               <h6 class=\"mb-3\">$$value[price]</h6>";
@@ -39,7 +33,7 @@ class ProductController extends Controller
                 ['product/buy?pid=' . $value['prod_id'], 'Buy Now', 'class' => 'btn btn-success']
             );
             $res .= "</div>
-          </div>";
+          </div></div>";
         }
         echo $this->view->message = $res;
     }
@@ -56,10 +50,16 @@ class ProductController extends Controller
 
     public function myordersAction()
     {
-        $order = $this->db->fetchAll("SELECT * FROM `orders` WHERE `uid` = '$_SESSION[user]'", \Phalcon\Db\Enum::FETCH_ASSOC);
+        $order = $this->db->fetchAll(
+            "SELECT * FROM `orders` WHERE `uid` = '$_SESSION[user]'",
+            \Phalcon\Db\Enum::FETCH_ASSOC
+        );
         $res = "";
         foreach ($order as $value) {
-            $product = $this->db->fetchAll("SELECT * FROM `products` where `prod_id` = '$value[pid]'", \Phalcon\Db\Enum::FETCH_ASSOC);
+            $product = $this->db->fetchAll(
+                "SELECT * FROM `products` where `prod_id` = '$value[pid]'",
+                \Phalcon\Db\Enum::FETCH_ASSOC
+            );
             $grandTotal = $product[0]['price'] * $value['quantity'];
             $image = $product[0]['image'];
             $title = $product[0]['title'];
@@ -124,7 +124,8 @@ class ProductController extends Controller
     {
         $pid = $_GET['pid'];
         $product = $this->db->fetchAll(
-            "SELECT * FROM `products` where `prod_id` = '$pid'", \Phalcon\Db\Enum::FETCH_ASSOC
+            "SELECT * FROM `products` where `prod_id` = '$pid'",
+            \Phalcon\Db\Enum::FETCH_ASSOC
         );
         $prod = $product[0];
         $res = "<form method = 'POST' action = '/product/update?pid=$prod[prod_id]'>";
@@ -171,7 +172,8 @@ class ProductController extends Controller
         $this->db->execute($sql);
         $this->response->redirect('/product/productcrud');
     }
-    public function addAction() {
+    public function addAction()
+    {
         $res = "<form method = 'POST' action = '/product/addnew'>";
         $res .= "<label for=\"fname\">Product Id:</label>
         <input type=\"text\" disabled  name=\"prod_id\" placeholder = 'Product ID'><br><br>";
@@ -203,9 +205,12 @@ class ProductController extends Controller
         $res .= "</form>";
         $this->view->message = $res;
     }
-    public function addnewAction() {
-        $sql = "INSERT INTO `products`(`title`, `price`, `description`, `category`, `image`, `rating_count`, `rating_points`, `quantity_remaining`)
-        VALUES ($_POST[title],$_POST[price],$_POST[description],$_POST[category],$_POST[image],$_POST[rating_count],$_POST[rating_points],$_POST[quantity_remaining])";
+    public function addnewAction()
+    {
+        $sql = "INSERT INTO `products`
+        (`title`, `price`, `description`, `category`, `image`, `rating_count`, `rating_points`, `quantity_remaining`)
+        VALUES($_POST[title],$_POST[price],$_POST[description],$_POST[category],$_POST[image],
+        $_POST[rating_count],$_POST[rating_points],$_POST[quantity_remaining])";
         $this->db->execute($sql);
         $this->response->redirect('/product/productcrud');
     }
